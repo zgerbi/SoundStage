@@ -1,0 +1,6 @@
+# System files
+.DS_Store
+*.xcuserstate
+
+# Large builds
+*/Builds
