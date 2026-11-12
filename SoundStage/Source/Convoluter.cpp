@@ -9,6 +9,7 @@
 */
 
 #include "Convoluter.h"
+#include <BinaryData.h>
 
 Convoluter::Convoluter() {
 	currSamplesPerBlock = -1;
@@ -237,53 +238,59 @@ int Convoluter::closest_azimuth_index(float azimuth) {
 
 int Convoluter::load_hrir_l() {
 
-	juce::File file = DATA_DIR.getChildFile("SoundStage/hrir_l.txt");
+  //	juce::File file = DATA_DIR.getChildFile("SoundStage/hrir_l.txt");
 
-	juce::String s = file.loadFileAsString();
-	if (!file.exists()) {
-		return -1;
-	}
+  //	juce::String s = file.loadFileAsString();
+  //	if (!file.exists()) {
+  //		return -1;
+  //	}
 
-	int pos = 0;
-	juce::StringArray stringArray;
+  //	int pos = 0;
+  juce::String hrir_l_data = juce::String::fromUTF8(BinaryData::hrir_l_txt,
+                                                    BinaryData::hrir_l_txtSize);
+  juce::StringArray stringArray;
+  stringArray.addLines(hrir_l_data);
 
+  //	file.readLines(stringArray);
+  for (int i = 0; i < 25; i++) {
+    for (int j = 0; j < 50; j++) {
+      for (int k = 0; k < 200; k++) {
+        hrir_l[i][j][k] =
+            stringArray[(i * 50 * 200) + (j * 200) + k].getFloatValue();
+      }
+    }
+  }
 
-	file.readLines(stringArray);
-	for (int i = 0; i < 25; i++) {
-		for (int j = 0; j < 50; j++) {
-			for (int k = 0; k < 200; k++) {
-				hrir_l[i][j][k] = stringArray[(i * 50 * 200) + (j * 200) + k].getFloatValue();
-			}
-		}
-	}
-
-	return 0;
+  return 0;
 }
 
 int Convoluter::load_hrir_r() {
-	juce::File file = DATA_DIR.getChildFile("SoundStage/hrir_r.txt");
+  //	juce::File file = DATA_DIR.getChildFile("SoundStage/hrir_r.txt");
 
-	juce::String s = file.loadFileAsString();
-	if (!file.exists()) {
-		juce::Logger::outputDebugString("failed to load right");
-		juce::Logger::outputDebugString(juce::String(file.getFullPathName()));
-		return -1;
-	}
+  //	juce::String s = file.loadFileAsString();
+  //	if (!file.exists()) {
+  //		juce::Logger::outputDebugString("failed to load right");
+  //		juce::Logger::outputDebugString(juce::String(file.getFullPathName()));
+  //		return -1;
+  //	}
 
-	int pos = 0;
-	juce::StringArray stringArray;
+  //	int pos = 0;
+  juce::String hrir_r_data = juce::String::fromUTF8(BinaryData::hrir_r_txt,
+                                                    BinaryData::hrir_r_txtSize);
+  juce::StringArray stringArray;
+  stringArray.addLines(hrir_r_data);
 
+  //	file.readLines(stringArray);
+  for (int i = 0; i < 25; i++) {
+    for (int j = 0; j < 50; j++) {
+      for (int k = 0; k < 200; k++) {
+        hrir_r[i][j][k] =
+            stringArray[(i * 50 * 200) + (j * 200) + k].getFloatValue();
+      }
+    }
+  }
 
-	file.readLines(stringArray);
-	for (int i = 0; i < 25; i++) {
-		for (int j = 0; j < 50; j++) {
-			for (int k = 0; k < 200; k++) {
-				hrir_r[i][j][k] = stringArray[(i * 50 * 200) + (j * 200) + k].getFloatValue();
-			}
-		}
-	}
-
-	return 0;
+  return 0;
 }
 
 float* Convoluter::get_hrir_l(int az, int elevation) {

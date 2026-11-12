@@ -1,6 +1,8 @@
-# System files
+# System/user files
 .DS_Store
 *.xcuserstate
+.vscode
+.clangd
 
 # Large builds
 */Builds
