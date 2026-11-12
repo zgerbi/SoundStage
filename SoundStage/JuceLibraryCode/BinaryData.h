@@ -8,11 +8,11 @@
 
 namespace BinaryData
 {
-    extern const char*   hrir_l_txt;
-    const int            hrir_l_txtSize = 3318404;
+    extern const char*   hrir_l_bin;
+    const int            hrir_l_binSize = 1000000;
 
-    extern const char*   hrir_r_txt;
-    const int            hrir_r_txtSize = 3434928;
+    extern const char*   hrir_r_bin;
+    const int            hrir_r_binSize = 1000000;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 2;

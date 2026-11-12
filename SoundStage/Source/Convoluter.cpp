@@ -9,7 +9,9 @@
 */
 
 #include "Convoluter.h"
+#include "juce_core/system/juce_PlatformDefs.h"
 #include <BinaryData.h>
+#include <arm_neon.h>
 
 Convoluter::Convoluter() {
   currSamplesPerBlock = -1;
@@ -181,70 +183,23 @@ int Convoluter::closest_azimuth_index(float azimuth) {
 }
 
 int Convoluter::load_hrir_l() {
-
-  //	juce::File file = DATA_DIR.getChildFile("SoundStage/hrir_l.txt");
-
-  //	juce::String s = file.loadFileAsString();
-  //	if (!file.exists()) {
-  //		return -1;
-  //	}
-
-  //	int pos = 0;
-  juce::String hrir_l_data = juce::String::fromUTF8(BinaryData::hrir_l_txt,
-                                                    BinaryData::hrir_l_txtSize);
-  juce::StringArray stringArray;
-  stringArray.addLines(hrir_l_data);
-
-  //	file.readLines(stringArray);
-  for (int i = 0; i < 25; i++) {
-    for (int j = 0; j < 50; j++) {
-      for (int k = 0; k < 200; k++) {
-        hrir_l[i][j][k] =
-            stringArray[(i * 50 * 200) + (j * 200) + k].getFloatValue();
-      }
-    }
-  }
-
+  jassert(BinaryData::hrir_l_binSize == sizeof(hrir_l));
+  std::memcpy(hrir_l, BinaryData::hrir_l_bin, BinaryData::hrir_l_binSize);
   return 0;
 }
 
 int Convoluter::load_hrir_r() {
-  //	juce::File file = DATA_DIR.getChildFile("SoundStage/hrir_r.txt");
-
-  //	juce::String s = file.loadFileAsString();
-  //	if (!file.exists()) {
-  //		juce::Logger::outputDebugString("failed to load right");
-  //		juce::Logger::outputDebugString(juce::String(file.getFullPathName()));
-  //		return -1;
-  //	}
-
-  //	int pos = 0;
-  juce::String hrir_r_data = juce::String::fromUTF8(BinaryData::hrir_r_txt,
-                                                    BinaryData::hrir_r_txtSize);
-  juce::StringArray stringArray;
-  stringArray.addLines(hrir_r_data);
-
-  //	file.readLines(stringArray);
-  for (int i = 0; i < 25; i++) {
-    for (int j = 0; j < 50; j++) {
-      for (int k = 0; k < 200; k++) {
-        hrir_r[i][j][k] =
-            stringArray[(i * 50 * 200) + (j * 200) + k].getFloatValue();
-      }
-    }
-  }
-
+  jassert(BinaryData::hrir_r_binSize == sizeof(hrir_r));
+  std::memcpy(hrir_r, BinaryData::hrir_r_bin, BinaryData::hrir_r_binSize);
   return 0;
 }
 
 float *Convoluter::get_hrir_l(int az, int elevation) {
   float *value = hrir_l[az][elevation];
-
   return value;
 }
 
 float *Convoluter::get_hrir_r(int az, int elevation) {
   float *value = hrir_r[az][elevation];
-
   return value;
 }

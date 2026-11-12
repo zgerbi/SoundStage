@@ -3,6 +3,7 @@
 *.xcuserstate
 .vscode
 .clangd
+.venv/*
 
 # Large builds
 */Builds

@@ -14,8 +14,8 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="IduKeh" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
-    <FILE id="nN6J3K" name="hrir_l.txt" compile="0" resource="1" file="../data/hrir_l.txt"/>
-    <FILE id="qItdR9" name="hrir_r.txt" compile="0" resource="1" file="../data/hrir_r.txt"/>
+    <FILE id="IVK6vw" name="hrir_l.bin" compile="0" resource="1" file="../data/hrir_l.bin"/>
+    <FILE id="RbOk4L" name="hrir_r.bin" compile="0" resource="1" file="../data/hrir_r.bin"/>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
