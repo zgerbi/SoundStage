@@ -47,8 +47,8 @@ private:
   juce::AudioProcessorValueTreeState &audioProcessorValueTreeState;
 
   // UI design
-  juce::Image azimuthRefImg;
-  juce::Image elevationRefImg;
+  juce::Image azRefImg;
+  juce::Image elRefImg;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundStageAudioProcessorEditor)
 };

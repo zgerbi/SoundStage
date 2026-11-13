@@ -90,9 +90,9 @@ SoundStageAudioProcessorEditor::SoundStageAudioProcessorEditor(
   setSize(400, 300);
 
   // IMAGES
-  azimuthRefImg = juce::ImageCache::getFromMemory(
+  azRefImg = juce::ImageCache::getFromMemory(
       BinaryData::azimuth_reference_png, BinaryData::azimuth_reference_pngSize);
-  elevationRefImg =
+  elRefImg =
       juce::ImageCache::getFromMemory(BinaryData::elevation_reference_png,
                                       BinaryData::elevation_reference_pngSize);
 }
@@ -110,15 +110,16 @@ void SoundStageAudioProcessorEditor::paint(juce::Graphics &g) {
 
   // Azimuth reference PNG
   auto azRingBounds = azimuthControl.getBounds().toFloat();
-  auto azRefBounds = azRingBounds.withSizeKeepingCentre(80, 80);
-  g.drawImage(azimuthRefImg, azRefBounds, juce::RectanglePlacement::centred);
+  auto azRefBounds =
+      azRingBounds.withSizeKeepingCentre(100, 100).translated(0.0f, -15.0f);
+  g.drawImage(azRefImg, azRefBounds, juce::RectanglePlacement::centred);
 
   // Elevation reference PNG
   auto elSlideBounds = elevationControl.getBounds().toFloat();
-  juce::Rectangle<float> elRefBounds(elSlideBounds.getX() - 60.0f,
-                                     elSlideBounds.getCentreY() - 30.0f, 50.0f,
-                                     60.0f);
-  g.drawImage(elevationRefImg, elRefBounds, juce::RectanglePlacement::centred);
+  juce::Rectangle<float> elRefBounds(elSlideBounds.getX() - 70.0f,
+                                     elSlideBounds.getCentreY() - 20.0f, 100.0f,
+                                     100.0f);
+  g.drawImage(elRefImg, elRefBounds, juce::RectanglePlacement::centred);
 }
 
 void SoundStageAudioProcessorEditor::resized() {
