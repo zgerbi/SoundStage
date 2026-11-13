@@ -9,6 +9,7 @@
 #pragma once
 
 #include "PluginProcessor.h"
+#include "juce_graphics/juce_graphics.h"
 #include <JuceHeader.h>
 #include <memory>
 
@@ -29,8 +30,7 @@ public:
   void sliderValueChanged(juce::Slider *slider) override;
 
 private:
-  // This reference is provided as a quick way for your editor to
-  // access the processor object that created it.
+  // Controls
 
   juce::Slider azimuthControl;
   juce::Slider elevationControl;
@@ -45,6 +45,10 @@ private:
 
   SoundStageAudioProcessor &audioProcessor;
   juce::AudioProcessorValueTreeState &audioProcessorValueTreeState;
+
+  // UI design
+  juce::Image azimuthRefImg;
+  juce::Image elevationRefImg;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundStageAudioProcessorEditor)
 };

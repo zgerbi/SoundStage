@@ -8,6 +8,15 @@
 
 namespace BinaryData
 {
+    extern const char*   azimuth_reference_png;
+    const int            azimuth_reference_pngSize = 484054;
+
+    extern const char*   elevation_reference_png;
+    const int            elevation_reference_pngSize = 262570;
+
+    extern const char*   Fraunces_72ptSemiBold_ttf;
+    const int            Fraunces_72ptSemiBold_ttfSize = 72644;
+
     extern const char*   hrir_l_bin;
     const int            hrir_l_binSize = 1000000;
 
@@ -15,7 +24,7 @@ namespace BinaryData
     const int            hrir_r_binSize = 1000000;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 2;
+    const int namedResourceListSize = 5;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

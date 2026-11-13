@@ -7,7 +7,9 @@
 */
 
 #include "PluginEditor.h"
+#include "BinaryData.h"
 #include "PluginProcessor.h"
+#include "juce_graphics/juce_graphics.h"
 #include "math.h"
 
 //==============================================================================
@@ -18,11 +20,42 @@ SoundStageAudioProcessorEditor::SoundStageAudioProcessorEditor(
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
 
+  // TYPEFACE
+  auto font = juce::Typeface::createSystemTypefaceFor(
+      BinaryData::Fraunces_72ptSemiBold_ttf,
+      BinaryData::Fraunces_72ptSemiBold_ttfSize);
+  juce::LookAndFeel::getDefaultLookAndFeel().setDefaultSansSerifTypeface(font);
+
+  // COLO(U)R SCHEME SETTINGS
+  getLookAndFeel().setColour(juce::Slider::thumbColourId,
+                             juce::Colours::firebrick);
+  getLookAndFeel().setColour(juce::Slider::trackColourId,
+                             juce::Colours::saddlebrown);
+  getLookAndFeel().setColour(juce::Slider::rotarySliderFillColourId,
+                             juce::Colours::transparentBlack);
+  getLookAndFeel().setColour(juce::Slider::backgroundColourId,
+                             juce::Colours::ivory);
+  getLookAndFeel().setColour(juce::Slider::rotarySliderOutlineColourId,
+                             juce::Colours::sienna);
+  getLookAndFeel().setColour(juce::ResizableWindow::backgroundColourId,
+                             juce::Colours::darkgrey);
+
+  juce::Colour text_colour = juce::Colours::darkgrey;
+
+  getLookAndFeel().setColour(juce::Label::textColourId, text_colour);
+  getLookAndFeel().setColour(juce::Slider::textBoxTextColourId, text_colour);
+  getLookAndFeel().setColour(juce::Slider::textBoxBackgroundColourId,
+                             juce::Colours::transparentBlack);
+  getLookAndFeel().setColour(juce::Slider::textBoxOutlineColourId,
+                             juce::Colours::transparentBlack);
+  getLookAndFeel().setColour(juce::Slider::textBoxHighlightColourId,
+                             juce::Colours::crimson);
+
   // ELEVATION SLIDER SETTINGS
   elevationControl.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
   elevationControl.setRange(-45.f, 90.f, 5.f);
   elevationControl.setValue(0.f);
-  elevationControl.setTextBoxStyle(juce::Slider::TextBoxLeft, 0, 50, 25);
+  elevationControl.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 28);
   elevationControl.addListener(this);
   addAndMakeVisible(elevationControl);
   elevationControlAttachment.reset(
@@ -33,7 +66,7 @@ SoundStageAudioProcessorEditor::SoundStageAudioProcessorEditor(
   azimuthControl.setSliderStyle(juce::Slider::SliderStyle::Rotary);
   azimuthControl.setRange(-180.f, 180.f, 1.f);
   azimuthControl.setRotaryParameters(2 * acos(0.0f), 6 * acos(0.0f), false);
-  azimuthControl.setTextBoxStyle(juce::Slider::TextBoxBelow, 0, 50, 25);
+  azimuthControl.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 28);
   azimuthControl.addListener(this);
   addAndMakeVisible(azimuthControl);
   azimuthControlAttachment.reset(
@@ -41,43 +74,51 @@ SoundStageAudioProcessorEditor::SoundStageAudioProcessorEditor(
                                                                azimuthControl));
 
   // LABEL SETTINGS
-  azLabel.setText("AZIMUTH", juce::NotificationType::dontSendNotification);
-  elLabel.setText("ELEVATION", juce::NotificationType::dontSendNotification);
+  azLabel.setText("Azimuth", juce::NotificationType::dontSendNotification);
+  elLabel.setText("Elevation", juce::NotificationType::dontSendNotification);
+  azLabel.setFont(azLabel.getFont().withHeight(18.0f));
+  elLabel.setFont(elLabel.getFont().withHeight(18.0f));
   azLabel.setEditable(false);
   elLabel.setEditable(false);
   azLabel.setJustificationType(juce::Justification::centred);
+  elLabel.setJustificationType(juce::Justification::bottomLeft);
   azLabel.attachToComponent(&azimuthControl, false);
   elLabel.attachToComponent(&elevationControl, true);
   addAndMakeVisible(azLabel);
   addAndMakeVisible(elLabel);
 
-  // COLOR SCHEME SETTINGS
-  getLookAndFeel().setColour(juce::Slider::thumbColourId,
-                             juce::Colours::purple);
-  getLookAndFeel().setColour(juce::Slider::trackColourId, juce::Colours::white);
-  getLookAndFeel().setColour(juce::Slider::rotarySliderFillColourId,
-                             juce::Colours::white);
-  getLookAndFeel().setColour(juce::Slider::backgroundColourId,
-                             juce::Colours::black);
-  getLookAndFeel().setColour(juce::Slider::rotarySliderOutlineColourId,
-                             juce::Colours::black);
-  getLookAndFeel().setColour(juce::ResizableWindow::backgroundColourId,
-                             juce::Colours::darkgrey);
-
   setSize(400, 300);
+
+  // IMAGES
+  azimuthRefImg = juce::ImageCache::getFromMemory(
+      BinaryData::azimuth_reference_png, BinaryData::azimuth_reference_pngSize);
+  elevationRefImg =
+      juce::ImageCache::getFromMemory(BinaryData::elevation_reference_png,
+                                      BinaryData::elevation_reference_pngSize);
 }
 
 SoundStageAudioProcessorEditor::~SoundStageAudioProcessorEditor() {}
 
 //==============================================================================
 void SoundStageAudioProcessorEditor::paint(juce::Graphics &g) {
-  // (Our component is opaque, so we must completely fill the background with a
-  // solid colour)
 
-  juce::ColourGradient grad1(juce::Colours::darkgrey, 200, 150,
-                             juce::Colours::black, 600, 400, 1);
+  // Solid background
+  juce::ColourGradient grad1(juce::Colours::linen, 200, 150, juce::Colours::tan,
+                             600, 400, 1);
   g.setGradientFill(grad1);
   g.fillAll();
+
+  // Azimuth reference PNG
+  auto azRingBounds = azimuthControl.getBounds().toFloat();
+  auto azRefBounds = azRingBounds.withSizeKeepingCentre(80, 80);
+  g.drawImage(azimuthRefImg, azRefBounds, juce::RectanglePlacement::centred);
+
+  // Elevation reference PNG
+  auto elSlideBounds = elevationControl.getBounds().toFloat();
+  juce::Rectangle<float> elRefBounds(elSlideBounds.getX() - 60.0f,
+                                     elSlideBounds.getCentreY() - 30.0f, 50.0f,
+                                     60.0f);
+  g.drawImage(elevationRefImg, elRefBounds, juce::RectanglePlacement::centred);
 }
 
 void SoundStageAudioProcessorEditor::resized() {

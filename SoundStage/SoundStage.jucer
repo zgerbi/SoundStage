@@ -14,6 +14,12 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="IduKeh" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <FILE id="fcCIbt" name="azimuth_reference.png" compile="0" resource="1"
+          file="../resources/azimuth_reference.png"/>
+    <FILE id="GJUsPt" name="elevation_reference.png" compile="0" resource="1"
+          file="../resources/elevation_reference.png"/>
+    <FILE id="X7NZF4" name="Fraunces_72pt-SemiBold.ttf" compile="0" resource="1"
+          file="../resources/Fraunces_72pt-SemiBold.ttf"/>
     <FILE id="IVK6vw" name="hrir_l.bin" compile="0" resource="1" file="../data/hrir_l.bin"/>
     <FILE id="RbOk4L" name="hrir_r.bin" compile="0" resource="1" file="../data/hrir_r.bin"/>
   </MAINGROUP>
