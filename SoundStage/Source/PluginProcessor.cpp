@@ -8,6 +8,9 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "juce_audio_processors_headless/juce_audio_processors_headless.h"
+#include "juce_core/juce_core.h"
+#include <memory>
 
 //==============================================================================
 SoundStageAudioProcessor::SoundStageAudioProcessor()
@@ -20,11 +23,13 @@ SoundStageAudioProcessor::SoundStageAudioProcessor()
 #endif
               .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-      )
+              ),
 #endif
-{
-  azimuth = 0;
-  elevation = 0;
+      apvts(*this, nullptr, "PARAMETERS", createParameterLayout()) {
+  azimuth = apvts.getRawParameterValue("azimuth");
+  elevation = apvts.getRawParameterValue("elevation");
+  //   azimuth = 0;
+  //   elevation = 0;
   convoluter = new Convoluter();
 }
 
@@ -156,9 +161,24 @@ void SoundStageAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
     }
   }
 
-  convoluter->elevation = elevation;
-  convoluter->azimuth = azimuth;
+  convoluter->elevation = elevation->load();
+  convoluter->azimuth = azimuth->load();
   convoluter->convolute(buffer);
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout
+SoundStageAudioProcessor::createParameterLayout() {
+  juce::AudioProcessorValueTreeState::ParameterLayout layout;
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+      juce::ParameterID{"azimuth", 1}, "Azimuth",
+      juce::NormalisableRange<float>(-180.f, 180.f, 1.f), 0.f));
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+      juce::ParameterID{"elevation", 1}, "Elevation",
+      juce::NormalisableRange<float>(-45.f, 90.f, 5.f), 0.f));
+
+  return layout;
 }
 
 void SoundStageAudioProcessor::updateParameters() {}
@@ -169,7 +189,7 @@ bool SoundStageAudioProcessor::hasEditor() const {
 }
 
 juce::AudioProcessorEditor *SoundStageAudioProcessor::createEditor() {
-  return new SoundStageAudioProcessorEditor(*this);
+  return new SoundStageAudioProcessorEditor(*this, apvts);
 }
 
 //==============================================================================

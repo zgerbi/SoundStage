@@ -119,35 +119,32 @@ void Convoluter::convolute(juce::AudioBuffer<float> &buffer) {
 
 float Convoluter::correctAzimuth(float azimuth) {
   // this function takes in an angle from 0-360 and spits out the azimuth
-  // translated to what our HRTF can use
-  /*Structure:*/
-  if (azimuth >= 270.0 && azimuth <= 360.0) {
-    return -1.0 * (360.0 - azimuth);
-  } else if (azimuth >= 0.0 && azimuth <= 90.0) {
+  // translated to what our HRTF can use.
+
+  // The HRIR data only covers -80 to 80 for left and right ears, respectively.
+  // It makes a sphere using the elevation, where -45* to 90 are in front/below
+  // to above, and 90 to ~230 are above to behind/below Therefore, we correct
+  // the azimuth to lay only "in front", while adjusting the elevation in
+  // Convoluter::correctElevation to account for behind
+
+  if (azimuth > 90.0) {
+    return 180.0 - azimuth;
+  } else if (azimuth < -90.0) {
+    return -180.0 - azimuth;
+  } else {
     return azimuth;
-  } else if (azimuth > 90.0 && azimuth <= 180.0) {
-    return (180 - azimuth);
-  } else if (azimuth > 180.0 && azimuth < 270.0) {
-    return -1.0 * (azimuth - 180.0);
-  } else
-    return 0.0;
+  }
 }
 
 float Convoluter::correctElevation(float elevation, float azimuth) {
-  // this function takes in an angle from -45 to 90 and spits out the correct
-  // elevation based on the azimuth
-  float elevbuff = 0.0f;
-  if (azimuth >= 270.0 && azimuth <= 360.0) {
-    return elevation;
-  } else if (azimuth >= 0.0 && azimuth <= 90.0) {
-    return elevation;
-  } else if (azimuth > 90.0 && azimuth < 270.0) {
-    elevbuff = elevation + (180 - 2 * elevation);
-    if (elevbuff > 230.625)
-      elevbuff = 230.625;
-    return elevbuff;
-  } else
-    return 0.0;
+  // this function takes in an elevation from -45 to 90 and an azimuth and spits
+  // out the corrected elevation for the HRIR coordinate system
+
+  if (std::abs(azimuth) > 90.0) {
+    return 180.0 - elevation;
+  }
+
+  return elevation;
 }
 
 int Convoluter::closest_elevation_index(float elevation) {

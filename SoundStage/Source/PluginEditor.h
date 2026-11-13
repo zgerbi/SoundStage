@@ -8,39 +8,43 @@
 
 #pragma once
 
-#include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include <JuceHeader.h>
+#include <memory>
 
 //==============================================================================
 /**
-*/
-class SoundStageAudioProcessorEditor  : public juce::AudioProcessorEditor,
-                                        public juce::Slider::Listener
-{
+ */
+class SoundStageAudioProcessorEditor : public juce::AudioProcessorEditor,
+                                       public juce::Slider::Listener {
 public:
-    SoundStageAudioProcessorEditor (SoundStageAudioProcessor&);
-    ~SoundStageAudioProcessorEditor() override;
+  SoundStageAudioProcessorEditor(SoundStageAudioProcessor &,
+                                 juce::AudioProcessorValueTreeState &);
+  ~SoundStageAudioProcessorEditor() override;
 
-    //==============================================================================
-    void paint (juce::Graphics&) override;
-    void resized() override;
+  //==============================================================================
+  void paint(juce::Graphics &) override;
+  void resized() override;
 
-    void sliderValueChanged (juce::Slider* slider) override;
+  void sliderValueChanged(juce::Slider *slider) override;
 
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
-    
-    // UI STUFF //
+  // This reference is provided as a quick way for your editor to
+  // access the processor object that created it.
 
-    juce::Slider elevationControl;
-    juce::Slider azimuthControl;
-    
-    juce::Label azLabel;
-    juce::Label elLabel;
+  juce::Slider azimuthControl;
+  juce::Slider elevationControl;
 
-    
-    SoundStageAudioProcessor& audioProcessor;
+  std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>
+      azimuthControlAttachment;
+  std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>
+      elevationControlAttachment;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SoundStageAudioProcessorEditor)
+  juce::Label azLabel;
+  juce::Label elLabel;
+
+  SoundStageAudioProcessor &audioProcessor;
+  juce::AudioProcessorValueTreeState &audioProcessorValueTreeState;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundStageAudioProcessorEditor)
 };

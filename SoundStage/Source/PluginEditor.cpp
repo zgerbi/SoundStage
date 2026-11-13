@@ -12,8 +12,9 @@
 
 //==============================================================================
 SoundStageAudioProcessorEditor::SoundStageAudioProcessorEditor(
-    SoundStageAudioProcessor &p)
-    : AudioProcessorEditor(&p), audioProcessor(p) {
+    SoundStageAudioProcessor &p, juce::AudioProcessorValueTreeState &apvts)
+    : AudioProcessorEditor(&p), audioProcessor(p),
+      audioProcessorValueTreeState(apvts) {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
 
@@ -24,14 +25,20 @@ SoundStageAudioProcessorEditor::SoundStageAudioProcessorEditor(
   elevationControl.setTextBoxStyle(juce::Slider::TextBoxLeft, 0, 50, 25);
   elevationControl.addListener(this);
   addAndMakeVisible(elevationControl);
+  elevationControlAttachment.reset(
+      new juce::AudioProcessorValueTreeState::SliderAttachment(
+          apvts, "elevation", elevationControl));
 
   // AZIMUTH SLIDER SETTINGS
   azimuthControl.setSliderStyle(juce::Slider::SliderStyle::Rotary);
-  azimuthControl.setRange(0.f, 360.f, 1.f);
-  azimuthControl.setRotaryParameters(0.f, 4 * acos(0.0f), 0);
+  azimuthControl.setRange(-180.f, 180.f, 1.f);
+  azimuthControl.setRotaryParameters(2 * acos(0.0f), 6 * acos(0.0f), false);
   azimuthControl.setTextBoxStyle(juce::Slider::TextBoxBelow, 0, 50, 25);
   azimuthControl.addListener(this);
   addAndMakeVisible(azimuthControl);
+  azimuthControlAttachment.reset(
+      new juce::AudioProcessorValueTreeState::SliderAttachment(apvts, "azimuth",
+                                                               azimuthControl));
 
   // LABEL SETTINGS
   azLabel.setText("AZIMUTH", juce::NotificationType::dontSendNotification);
@@ -84,10 +91,10 @@ void SoundStageAudioProcessorEditor::resized() {
 
 void SoundStageAudioProcessorEditor::sliderValueChanged(juce::Slider *slider) {
   if (slider == &elevationControl) {
-    audioProcessor.elevation = elevationControl.getValue();
+    audioProcessor.elevation->store(elevationControl.getValue());
   }
 
   if (slider == &azimuthControl) {
-    audioProcessor.azimuth = azimuthControl.getValue();
+    audioProcessor.azimuth->store(azimuthControl.getValue());
   }
 }
