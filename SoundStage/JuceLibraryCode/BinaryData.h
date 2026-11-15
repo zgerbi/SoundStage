@@ -23,8 +23,17 @@ namespace BinaryData
     extern const char*   hrir_r_bin;
     const int            hrir_r_binSize = 1000000;
 
+    extern const char*   ITD_bin;
+    const int            ITD_binSize = 5000;
+
+    extern const char*   OnL_bin;
+    const int            OnL_binSize = 5000;
+
+    extern const char*   OnR_bin;
+    const int            OnR_binSize = 5000;
+
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 5;
+    const int namedResourceListSize = 8;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

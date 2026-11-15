@@ -22,6 +22,9 @@
           file="../resources/Fraunces_72pt-SemiBold.ttf"/>
     <FILE id="IVK6vw" name="hrir_l.bin" compile="0" resource="1" file="../data/hrir_l.bin"/>
     <FILE id="RbOk4L" name="hrir_r.bin" compile="0" resource="1" file="../data/hrir_r.bin"/>
+    <FILE id="lPQ4P3" name="ITD.bin" compile="0" resource="1" file="../data/ITD.bin"/>
+    <FILE id="ZwKYZZ" name="OnL.bin" compile="0" resource="1" file="../data/OnL.bin"/>
+    <FILE id="xRr0Fu" name="OnR.bin" compile="0" resource="1" file="../data/OnR.bin"/>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
