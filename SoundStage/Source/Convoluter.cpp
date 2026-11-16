@@ -15,12 +15,6 @@
 #include <cstring>
 
 Convoluter::Convoluter() {
-  currSamplesPerBlock = -1;
-  bufferSize = -1;
-  convolutedSignal = juce::AudioBuffer<float>();
-  overflowStorage = juce::AudioBuffer<float>(2, 200);
-  overflowStorage.clear();
-
   elevation = 0;
   azimuth = 0;
 
@@ -32,26 +26,8 @@ Convoluter::Convoluter() {
 
 Convoluter::~Convoluter() {}
 
-void Convoluter::setSamplesPerBlock(int samplesPerBlock) {
-
-  if (samplesPerBlock != currSamplesPerBlock) {
-    bufferSize = samplesPerBlock;
-
-    convolutedSignal = juce::AudioBuffer<float>(2, bufferSize + overflowSize);
-    convolutedSignal.clear();
-
-    overflowStorage = juce::AudioBuffer<float>(2, overflowSize);
-    overflowStorage.clear();
-
-    currSamplesPerBlock = samplesPerBlock;
-  }
-}
-
 void Convoluter::convolute(juce::AudioBuffer<float> &buffer) {
   const int numSamples = buffer.getNumSamples();
-  if (numSamples > bufferSize) {
-    setSamplesPerBlock(numSamples);
-  }
 
   const int azimuth_index = closest_azimuth_index(correctAzimuth(azimuth));
   const int elev_index =

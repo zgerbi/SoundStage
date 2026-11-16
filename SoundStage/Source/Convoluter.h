@@ -19,17 +19,10 @@ public:
   ~Convoluter();
   void convolute(juce::AudioBuffer<float> &buffer);
 
-  void setSamplesPerBlock(int samplesPerBlock);
   float elevation;
   float azimuth;
 
 private:
-  juce::AudioBuffer<float> convolutedSignal;
-  juce::AudioBuffer<float> overflowStorage;
-  int bufferSize;
-  int overflowSize = 200;
-  int currSamplesPerBlock;
-
   float hrir_l[25][50][200];
   float hrir_r[25][50][200];
 
