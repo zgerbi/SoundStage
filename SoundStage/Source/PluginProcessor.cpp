@@ -152,12 +152,6 @@ void SoundStageAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
       float sampleRight = buffer.getSample(1, sample);
       float monoSummed = 0.5f * (sampleLeft + sampleRight);
       buffer.setSample(0, sample, monoSummed);
-      buffer.setSample(1, sample, monoSummed);
-    }
-  } else {
-    for (int sample = 0; sample < buffer.getNumSamples(); sample++) {
-      // Makes dual mono if mono
-      buffer.setSample(1, sample, buffer.getSample(0, sample));
     }
   }
 
